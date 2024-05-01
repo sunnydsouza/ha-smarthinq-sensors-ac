@@ -42,7 +42,7 @@ set_fan_mode:
   target:
     entity:
       integration: smartthinq_sensors
-      domain: humidifier
+      domain: humidifier,climate
   fields:
     fan_mode:
       name: Fan mode
@@ -90,7 +90,7 @@ set_preset_mode:
           domain: climate
     preset_mode:
       name: Preset mode
-      description: New value of preset mode.Value should be one of 'AP','VIRAAT','80%','60%','40%'
+      description: New value of preset mode.Value should be one of 'none','AP','VIRAAT','80%','60%','40%'
       required: true
       example: "80%"
       selector:

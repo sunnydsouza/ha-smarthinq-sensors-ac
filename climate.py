@@ -57,6 +57,7 @@ SWING_PREFIX = ["Vertical", "Horizontal"]
 SERVICE_SET_SLEEP_TIME = "set_sleep_time"
 SERVICE_SET_PRESET_MODE = "set_preset_mode"
 SERVICE_SET_SWING_MODE = "set_swing_mode"
+SERVICE_SET_FAN_MODE = "set_fan_mode"
 
 HVAC_MODE_LOOKUP: dict[str, HVACMode] = {
     ACMode.AI.name: HVACMode.AUTO,
@@ -178,11 +179,13 @@ async def async_setup_entry(
     )
 
     valid_swing_modes = []
+    valid_preset_modes = [PRESET_NONE] + [mode["preset"] for mode in PRESET_MODE_LOOKUP.values()]
 
     # For each AC device, extend the valid_swing_modes list with the device's modes
     for lge_device in lge_cfg_devices.get(DeviceType.AC, []):
         ac_entity = LGEACClimate(lge_device)
         valid_swing_modes.extend(ac_entity._attr_swing_modes)
+        
 
     # register services
     platform = current_platform.get()
@@ -194,7 +197,7 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         SERVICE_SET_PRESET_MODE,
         {
-            vol.Required("preset_mode"): vol.All(cv.string, vol.In([mode["preset"] for mode in PRESET_MODE_LOOKUP.values()])),
+            vol.Required("preset_mode"): vol.All(cv.string, vol.In(valid_preset_modes)),
         },
         "async_set_preset_mode",
     )
@@ -205,7 +208,14 @@ async def async_setup_entry(
         },
         "async_set_swing_mode",
     )
-
+    
+    platform.async_register_entity_service(
+        SERVICE_SET_FAN_MODE,
+        {
+            vol.Required("fan_mode"): vol.In(FAN_MODE_LOOKUP.keys()),
+        },
+        "async_set_fan_mode",
+    )
 
 
 

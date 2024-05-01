@@ -747,6 +747,8 @@ class AirConditionerDevice(Device):
             await self.set_ap_mode(False)
             await self.set_mode_jet(False)
             await self.set_convertible_off()
+            # set default temperature of 26
+            await self.set_target_temp(26)
             # self._convertible_mode = ACConvertibleMode.NONE.name
         elif mode == ACConvertibleMode.AP.value:
             await self.set_ap_mode(True)
